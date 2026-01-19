@@ -1,6 +1,8 @@
 package de.zolitas.waystoned;
 
 import com.mojang.logging.LogUtils;
+import de.zolitas.waystoned.blocks.BlocksRegister;
+import de.zolitas.waystoned.items.ItemsRegister;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -13,5 +15,8 @@ public class Waystoned {
 
   public Waystoned(IEventBus modEventBus, ModContainer modContainer) {
     LOGGER.info("Waystoned initialized!");
+
+    BlocksRegister.BLOCKS.register(modEventBus);
+    ItemsRegister.ITEMS.register(modEventBus);
   }
 }
