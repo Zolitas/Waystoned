@@ -10,6 +10,12 @@ group = mod_group_id
 
 repositories {
     mavenLocal()
+    maven {
+        url "https://maven.wispforest.io"
+    }
+    maven {
+        url "https://maven.su5ed.dev/releases"
+    }
 }
 
 base {
@@ -116,6 +122,11 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+    implementation "io.wispforest:owo-lib-neoforge:" + project.owo_version
+    accessTransformers "io.wispforest:owo-lib-neoforge:" + project.owo_version
+    interfaceInjectionData "io.wispforest:owo-lib-neoforge:" + project.owo_version
+
+    implementation "org.sinytra:forgified-fabric-loader:" + project.forgefied_fabric_api_version
 
     compileOnly "org.projectlombok:lombok:" + lombok_version
     annotationProcessor "org.projectlombok:lombok:" + lombok_version

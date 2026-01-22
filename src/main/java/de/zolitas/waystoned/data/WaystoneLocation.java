@@ -3,13 +3,18 @@ package de.zolitas.waystoned.data;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 
 @Getter
 @Builder
 @AllArgsConstructor
+@ToString
 public class WaystoneLocation {
   private final String name;
   private final BlockPos pos;
@@ -32,4 +37,11 @@ public class WaystoneLocation {
         .dimension(ResourceLocation.parse(tag.getString("dimension")))
         .build();
   }
+
+  public static final StreamCodec<RegistryFriendlyByteBuf, WaystoneLocation> STREAM_CODEC = StreamCodec.composite(
+      ByteBufCodecs.STRING_UTF8, WaystoneLocation::getName,
+      BlockPos.STREAM_CODEC, WaystoneLocation::getPos,
+      ResourceLocation.STREAM_CODEC, WaystoneLocation::getDimension,
+      WaystoneLocation::new
+  );
 }
