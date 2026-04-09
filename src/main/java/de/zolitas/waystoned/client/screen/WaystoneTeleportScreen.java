@@ -1,6 +1,7 @@
 package de.zolitas.waystoned.client.screen;
 
 import de.zolitas.waystoned.data.WaystoneLocation;
+import de.zolitas.waystoned.network.WaystoneTeleportRequestPacket;
 import io.wispforest.owo.ui.base.BaseOwoScreen;
 import io.wispforest.owo.ui.component.Components;
 import io.wispforest.owo.ui.container.Containers;
@@ -9,7 +10,9 @@ import io.wispforest.owo.ui.container.ScrollContainer;
 import io.wispforest.owo.ui.core.*;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WaystoneTeleportScreen extends BaseOwoScreen<FlowLayout> {
   private final List<WaystoneLocation> waystones;
+  private final BlockPos requestWaystonePosition;
 
   @Override
   protected @NotNull OwoUIAdapter<FlowLayout> createAdapter() {
@@ -40,14 +44,11 @@ public class WaystoneTeleportScreen extends BaseOwoScreen<FlowLayout> {
 
     for (WaystoneLocation waystone : waystones) {
       waystoneContainer.child(Components.button(Component.literal(waystone.toString()), button -> {
-
+        PacketDistributor.sendToServer(new WaystoneTeleportRequestPacket(waystone, requestWaystonePosition));
+        Minecraft.getInstance().setScreen(null);
       }));
     }
 
     rootComponent.child(scrollContainer);
-  }
-
-  public static void openScreen(List<WaystoneLocation> waystones) {
-    Minecraft.getInstance().setScreen(new WaystoneTeleportScreen(waystones));
   }
 }

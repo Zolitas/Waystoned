@@ -1,10 +1,11 @@
 package de.zolitas.waystoned.network;
 
+import de.zolitas.waystoned.ClientBridge;
 import de.zolitas.waystoned.Waystoned;
-import de.zolitas.waystoned.client.screen.WaystoneTeleportScreen;
 import de.zolitas.waystoned.data.WaystoneLocation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -20,16 +21,21 @@ public class OpenWaystoneTeleportScreenPacket implements CustomPacketPayload {
   @Getter
   private final List<WaystoneLocation> waystones;
 
+  @Getter
+  private final BlockPos requestWaystonePosition;
+
   public static final Type<OpenWaystoneTeleportScreenPacket> TYPE =
       new Type<>(ResourceLocation.fromNamespaceAndPath(Waystoned.MODID, "open_waystone_teleport_screen"));
 
   public static void handle(OpenWaystoneTeleportScreenPacket packet, IPayloadContext context) {
-    context.enqueueWork(() -> WaystoneTeleportScreen.openScreen(packet.getWaystones()));
+    context.enqueueWork(() -> ClientBridge.openWaystoneTeleportScreen(packet.getWaystones(), packet.getRequestWaystonePosition()));
   }
 
   public static final StreamCodec<RegistryFriendlyByteBuf, OpenWaystoneTeleportScreenPacket> STREAM_CODEC = StreamCodec.composite(
       WaystoneLocation.STREAM_CODEC.apply(ByteBufCodecs.list()),
       OpenWaystoneTeleportScreenPacket::getWaystones,
+      BlockPos.STREAM_CODEC,
+      OpenWaystoneTeleportScreenPacket::getRequestWaystonePosition,
       OpenWaystoneTeleportScreenPacket::new
   );
 

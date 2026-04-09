@@ -1,3 +1,5 @@
 {
-  "block.waystoned.waystone": "Waystone"
+  "block.waystoned.waystone": "Waystone",
+  "message.waystoned.too_far_away": "You are too far away from the waystone",
+  "message.waystoned.invalid_request_block": "There is no waystone block here"
 }

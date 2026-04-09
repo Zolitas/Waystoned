@@ -11,10 +11,17 @@ public class PacketRegister {
   @SubscribeEvent
   public static void registerPackets(RegisterPayloadHandlersEvent event) {
     PayloadRegistrar registrar = event.registrar("1");
+
     registrar.playToClient(
         OpenWaystoneTeleportScreenPacket.TYPE,
         OpenWaystoneTeleportScreenPacket.STREAM_CODEC,
         OpenWaystoneTeleportScreenPacket::handle
+    );
+
+    registrar.playToServer(
+        WaystoneTeleportRequestPacket.TYPE,
+        WaystoneTeleportRequestPacket.STREAM_CODEC,
+        WaystoneTeleportRequestPacket::handle
     );
   }
 }

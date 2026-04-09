@@ -40,7 +40,7 @@ public class WaystoneBlock extends Block {
     if (!(player instanceof ServerPlayer serverPlayer)) return ItemInteractionResult.SUCCESS;
 
     ArrayList<WaystoneLocation> waystones = WaystoneSavedData.get(level.getServer()).getWaystones();
-    PacketDistributor.sendToPlayer(serverPlayer, new OpenWaystoneTeleportScreenPacket(waystones));
+    PacketDistributor.sendToPlayer(serverPlayer, new OpenWaystoneTeleportScreenPacket(waystones, pos));
 
     return ItemInteractionResult.SUCCESS;
   }
