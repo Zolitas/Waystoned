@@ -2,6 +2,7 @@ package de.zolitas.waystoned.network;
 
 import de.zolitas.waystoned.Waystoned;
 import de.zolitas.waystoned.blocks.BlocksRegister;
+import de.zolitas.waystoned.blocks.WaystoneBlock;
 import de.zolitas.waystoned.data.WaystoneLocation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,6 +29,9 @@ public class WaystoneTeleportRequestPacket implements CustomPacketPayload {
   @Getter
   private final BlockPos requestWaystonePosition;
 
+  @Getter
+  private final ResourceKey<Level> requestDimension;
+
   public static final Type<WaystoneTeleportRequestPacket> TYPE =
       new Type<>(ResourceLocation.fromNamespaceAndPath(Waystoned.MODID, "waystone_teleport_request"));
 
@@ -36,11 +41,11 @@ public class WaystoneTeleportRequestPacket implements CustomPacketPayload {
 
     context.enqueueWork(() -> {
       WaystoneLocation waystone = packet.getWaystone();
-      ServerLevel level = serverPlayer.getServer().getLevel(ResourceKey.create(Registries.DIMENSION, waystone.getDimension()));
 
-      if (level == null) return;
+      ServerLevel requestLevel = serverPlayer.getServer().getLevel(packet.getRequestDimension());
+      if (requestLevel == null) return;
 
-      if (!level.getBlockState(packet.getRequestWaystonePosition()).getBlock().equals(BlocksRegister.WAYSTONE_BLOCK.get())) {
+      if (!requestLevel.getBlockState(packet.getRequestWaystonePosition()).getBlock().equals(BlocksRegister.WAYSTONE_BLOCK.get())) {
         serverPlayer.sendSystemMessage(Component.translatable("message.waystoned.invalid_request_block").withStyle(ChatFormatting.RED));
         return;
       }
@@ -49,12 +54,15 @@ public class WaystoneTeleportRequestPacket implements CustomPacketPayload {
         return;
       }
 
+      ServerLevel waystoneLevel = serverPlayer.getServer().getLevel(ResourceKey.create(Registries.DIMENSION, waystone.getDimension()));
+      if (waystoneLevel == null) return;
+
       serverPlayer.teleportTo(
-          level,
-          waystone.getPos().getX(),
-          waystone.getPos().getY(),
-          waystone.getPos().getZ(),
-          0,
+          waystoneLevel,
+          waystone.getPos().getX() + 0.5,
+          waystone.getPos().getY() + WaystoneBlock.WAYSTONE_COLLISION_HEIGHT,
+          waystone.getPos().getZ() + 0.5,
+          waystone.getRot(),
           0
       );
     });
@@ -65,6 +73,8 @@ public class WaystoneTeleportRequestPacket implements CustomPacketPayload {
       WaystoneTeleportRequestPacket::getWaystone,
       BlockPos.STREAM_CODEC,
       WaystoneTeleportRequestPacket::getRequestWaystonePosition,
+      ResourceKey.streamCodec(Registries.DIMENSION),
+      WaystoneTeleportRequestPacket::getRequestDimension,
       WaystoneTeleportRequestPacket::new
   );
 

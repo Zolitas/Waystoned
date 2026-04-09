@@ -6,11 +6,14 @@ import de.zolitas.waystoned.data.WaystoneLocation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,11 +27,14 @@ public class OpenWaystoneTeleportScreenPacket implements CustomPacketPayload {
   @Getter
   private final BlockPos requestWaystonePosition;
 
+  @Getter
+  private final ResourceKey<Level> requestDimension;
+
   public static final Type<OpenWaystoneTeleportScreenPacket> TYPE =
       new Type<>(ResourceLocation.fromNamespaceAndPath(Waystoned.MODID, "open_waystone_teleport_screen"));
 
   public static void handle(OpenWaystoneTeleportScreenPacket packet, IPayloadContext context) {
-    context.enqueueWork(() -> ClientBridge.openWaystoneTeleportScreen(packet.getWaystones(), packet.getRequestWaystonePosition()));
+    context.enqueueWork(() -> ClientBridge.openWaystoneTeleportScreen(packet.getWaystones(), packet.getRequestWaystonePosition(), packet.getRequestDimension()));
   }
 
   public static final StreamCodec<RegistryFriendlyByteBuf, OpenWaystoneTeleportScreenPacket> STREAM_CODEC = StreamCodec.composite(
@@ -36,6 +42,8 @@ public class OpenWaystoneTeleportScreenPacket implements CustomPacketPayload {
       OpenWaystoneTeleportScreenPacket::getWaystones,
       BlockPos.STREAM_CODEC,
       OpenWaystoneTeleportScreenPacket::getRequestWaystonePosition,
+      ResourceKey.streamCodec(Registries.DIMENSION),
+      OpenWaystoneTeleportScreenPacket::getRequestDimension,
       OpenWaystoneTeleportScreenPacket::new
   );
 

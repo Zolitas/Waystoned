@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 public class WaystoneLocation {
   private final String name;
   private final BlockPos pos;
+  private final Float rot;
   private final ResourceLocation dimension;
 
   public static CompoundTag toCompoundTag(WaystoneLocation waystone) {
@@ -26,6 +27,7 @@ public class WaystoneLocation {
     tag.putInt("x", waystone.getPos().getX());
     tag.putInt("y", waystone.getPos().getY());
     tag.putInt("z", waystone.getPos().getZ());
+    tag.putFloat("rot", waystone.getRot());
     tag.putString("dimension", waystone.getDimension().toString());
     return tag;
   }
@@ -34,6 +36,7 @@ public class WaystoneLocation {
     return WaystoneLocation.builder()
         .name(tag.getString("name"))
         .pos(new BlockPos(tag.getInt("x"), tag.getInt("y"), tag.getInt("z")))
+        .rot(tag.getFloat("rot"))
         .dimension(ResourceLocation.parse(tag.getString("dimension")))
         .build();
   }
@@ -41,6 +44,7 @@ public class WaystoneLocation {
   public static final StreamCodec<RegistryFriendlyByteBuf, WaystoneLocation> STREAM_CODEC = StreamCodec.composite(
       ByteBufCodecs.STRING_UTF8, WaystoneLocation::getName,
       BlockPos.STREAM_CODEC, WaystoneLocation::getPos,
+      ByteBufCodecs.FLOAT, WaystoneLocation::getRot,
       ResourceLocation.STREAM_CODEC, WaystoneLocation::getDimension,
       WaystoneLocation::new
   );

@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +23,7 @@ import java.util.List;
 public class WaystoneTeleportScreen extends BaseOwoScreen<FlowLayout> {
   private final List<WaystoneLocation> waystones;
   private final BlockPos requestWaystonePosition;
+  private final ResourceKey<Level> requestDimension;
 
   @Override
   protected @NotNull OwoUIAdapter<FlowLayout> createAdapter() {
@@ -44,7 +47,7 @@ public class WaystoneTeleportScreen extends BaseOwoScreen<FlowLayout> {
 
     for (WaystoneLocation waystone : waystones) {
       waystoneContainer.child(Components.button(Component.literal(waystone.toString()), button -> {
-        PacketDistributor.sendToServer(new WaystoneTeleportRequestPacket(waystone, requestWaystonePosition));
+        PacketDistributor.sendToServer(new WaystoneTeleportRequestPacket(waystone, requestWaystonePosition, requestDimension));
         Minecraft.getInstance().setScreen(null);
       }));
     }
