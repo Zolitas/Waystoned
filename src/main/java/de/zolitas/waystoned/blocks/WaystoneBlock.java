@@ -1,6 +1,7 @@
 package de.zolitas.waystoned.blocks;
 
 import com.mojang.serialization.MapCodec;
+import de.zolitas.waystoned.ClientBridge;
 import de.zolitas.waystoned.Waystoned;
 import de.zolitas.waystoned.data.WaystoneLocation;
 import de.zolitas.waystoned.data.WaystoneSavedData;
@@ -113,6 +114,10 @@ public class WaystoneBlock extends HorizontalDirectionalBlock {
   public void setPlacedBy(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state,
                           @Nullable LivingEntity placer, @NotNull ItemStack stack) {
     level.setBlock(pos.above(), state.setValue(HALF, DoubleBlockHalf.UPPER), 3);
+
+    if (level.isClientSide()) {
+      ClientBridge.openWaystoneRenameScreen(pos);
+    }
   }
 
   protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -122,19 +127,25 @@ public class WaystoneBlock extends HorizontalDirectionalBlock {
 
   @SubscribeEvent
   private static void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
+    if (!(event.getPlacedBlock().getBlock() instanceof WaystoneBlock)) return;
     if (event.getLevel().isClientSide()) return;
     if (!(event.getLevel() instanceof ServerLevel serverLevel)) return;
-    if (!(event.getPlacedBlock().getBlock() instanceof WaystoneBlock)) return;
 
-    WaystoneLocation waystone = WaystoneLocation.builder()
-        .name("test")
+    WaystoneLocation.WaystoneLocationBuilder waystoneBuilder = WaystoneLocation.builder()
+        .name("New Waystone")
         .pos(event.getPos())
         .rot(event.getPlacedBlock().getValue(FACING).toYRot())
-        .dimension(serverLevel.dimension().location())
-        .build();
+        .dimension(serverLevel.dimension().location());
+
+    if (event.getEntity() instanceof ServerPlayer player) {
+      waystoneBuilder
+          .ownerName(player.getGameProfile().getName())
+          .ownerUUID(player.getGameProfile().getId().toString());
+    }
+
 
     WaystoneSavedData savedData = WaystoneSavedData.get(serverLevel.getServer());
-    savedData.getWaystones().add(waystone);
+    savedData.getWaystones().add(waystoneBuilder.build());
     savedData.setDirty();
   }
 

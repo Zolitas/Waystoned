@@ -1,9 +1,6 @@
 package de.zolitas.waystoned.data;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -16,10 +13,13 @@ import net.minecraft.resources.ResourceLocation;
 @AllArgsConstructor
 @ToString
 public class WaystoneLocation {
-  private final String name;
+  @Setter
+  private String name;
   private final BlockPos pos;
   private final Float rot;
   private final ResourceLocation dimension;
+  private final String ownerName;
+  private final String ownerUUID;
 
   public static CompoundTag toCompoundTag(WaystoneLocation waystone) {
     CompoundTag tag = new CompoundTag();
@@ -29,6 +29,8 @@ public class WaystoneLocation {
     tag.putInt("z", waystone.getPos().getZ());
     tag.putFloat("rot", waystone.getRot());
     tag.putString("dimension", waystone.getDimension().toString());
+    tag.putString("ownerName", waystone.getOwnerName());
+    tag.putString("ownerUUID", waystone.getOwnerUUID());
     return tag;
   }
 
@@ -38,6 +40,8 @@ public class WaystoneLocation {
         .pos(new BlockPos(tag.getInt("x"), tag.getInt("y"), tag.getInt("z")))
         .rot(tag.getFloat("rot"))
         .dimension(ResourceLocation.parse(tag.getString("dimension")))
+        .ownerName(tag.getString("ownerName"))
+        .ownerUUID(tag.getString("ownerUUID"))
         .build();
   }
 
@@ -46,6 +50,8 @@ public class WaystoneLocation {
       BlockPos.STREAM_CODEC, WaystoneLocation::getPos,
       ByteBufCodecs.FLOAT, WaystoneLocation::getRot,
       ResourceLocation.STREAM_CODEC, WaystoneLocation::getDimension,
+      ByteBufCodecs.STRING_UTF8, WaystoneLocation::getOwnerName,
+      ByteBufCodecs.STRING_UTF8, WaystoneLocation::getOwnerUUID,
       WaystoneLocation::new
   );
 }

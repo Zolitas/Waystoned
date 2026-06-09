@@ -1,5 +1,6 @@
 package de.zolitas.waystoned;
 
+import de.zolitas.waystoned.client.screen.WaystoneRenameScreen;
 import de.zolitas.waystoned.client.screen.WaystoneTeleportScreen;
 import de.zolitas.waystoned.data.WaystoneLocation;
 import net.minecraft.client.Minecraft;
@@ -12,5 +13,9 @@ import java.util.List;
 public class ClientBridge {
   public static void openWaystoneTeleportScreen(List<WaystoneLocation> waystones, BlockPos requestWaystonePosition, ResourceKey<Level> requestDimension) {
     Minecraft.getInstance().setScreen(new WaystoneTeleportScreen(waystones, requestWaystonePosition, requestDimension));
+  }
+
+  public static void openWaystoneRenameScreen(BlockPos waystonePosition) {
+    Minecraft.getInstance().setScreen(new WaystoneRenameScreen(waystonePosition));
   }
 }

@@ -5,11 +5,16 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+@EventBusSubscriber
 public class WaystoneSavedData extends SavedData {
   @Getter
   private final ArrayList<WaystoneLocation> waystones = new ArrayList<>();
@@ -42,5 +47,17 @@ public class WaystoneSavedData extends SavedData {
         .forEach(data.waystones::add);
 
     return data;
+  }
+
+  @SubscribeEvent
+  private void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+    if (!(event.getEntity() instanceof ServerPlayer player)) return;
+
+    // rename waystones when the name changes
+    waystones
+        .stream()
+        .filter(waystone -> waystone.getOwnerUUID().equals(player.getGameProfile().getId().toString()))
+        .filter(waystone -> !(waystone.getName().equals(player.getGameProfile().getName())))
+        .forEach(waystone -> waystone.setName(player.getGameProfile().getName()));
   }
 }

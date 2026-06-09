@@ -23,5 +23,11 @@ public class PacketRegister {
         WaystoneTeleportRequestPacket.STREAM_CODEC,
         WaystoneTeleportRequestPacket::handle
     );
+
+    registrar.playToServer(
+        WaystoneRenameRequestPacket.TYPE,
+        WaystoneRenameRequestPacket.STREAM_CODEC,
+        WaystoneRenameRequestPacket::handle
+    );
   }
 }

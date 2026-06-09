@@ -1,5 +1,7 @@
 {
   "block.waystoned.waystone": "Waystone",
   "message.waystoned.too_far_away": "You are too far away from the waystone",
-  "message.waystoned.invalid_request_block": "There is no waystone block here"
+  "message.waystoned.not_in_same_dimension": "You are not in the same dimension as the waystone",
+  "message.waystoned.invalid_request_block": "There is no waystone block here",
+  "message.waystoned.not_owner": "You are not the owner of this waystone"
 }
