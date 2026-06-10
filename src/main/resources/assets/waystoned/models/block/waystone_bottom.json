@@ -1,0 +1,51 @@
+{
+	"format_version": "1.9.0",
+	"credit": "Made by Zolitas",
+	"render_type": "cutout",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "waystoned:block/waystone_base",
+		"1": "waystoned:block/waystone_bottom",
+		"particle": "waystoned:block/waystone_bottom"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 1, 16],
+			"faces": {
+				"north": {"uv": [8, 0, 16, 0.5], "texture": "#0"},
+				"east": {"uv": [8, 0.5, 16, 1], "texture": "#0"},
+				"south": {"uv": [8, 1, 16, 1.5], "texture": "#0"},
+				"west": {"uv": [8, 1.5, 16, 2], "texture": "#0"},
+				"up": {"uv": [8, 8, 0, 0], "texture": "#0"},
+				"down": {"uv": [8, 8, 0, 16], "texture": "#0"}
+			}
+		},
+		{
+			"from": [-0.675, 0, 2.325],
+			"to": [21.325, 16, 2.325],
+			"rotation": {"angle": -45, "axis": "y", "origin": [2.325, 0, 2.325]},
+			"faces": {
+				"north": {"uv": [11, 8, 0, 16], "texture": "#1"},
+				"east": {"uv": [0, 0, 0, 8], "texture": "#1"},
+				"south": {"uv": [0, 8, 11, 16], "texture": "#1"},
+				"west": {"uv": [0, 0, 0, 8], "texture": "#1"},
+				"up": {"uv": [11, 0, 0, 0], "texture": "#1"},
+				"down": {"uv": [11, 0, 0, 0], "texture": "#1"}
+			}
+		},
+		{
+			"from": [11.84264, 0, -4.89264],
+			"to": [11.84264, 16, 17.10736],
+			"rotation": {"angle": -45, "axis": "y", "origin": [7.6, 0, 2.35]},
+			"faces": {
+				"north": {"uv": [0, 0, 0, 8], "texture": "#1"},
+				"east": {"uv": [11, 8, 0, 16], "texture": "#1"},
+				"south": {"uv": [0, 0, 0, 8], "texture": "#1"},
+				"west": {"uv": [0, 8, 11, 16], "texture": "#1"},
+				"up": {"uv": [11, 0, 0, 0], "rotation": 90, "texture": "#1"},
+				"down": {"uv": [11, 0, 0, 0], "rotation": 270, "texture": "#1"}
+			}
+		}
+	]
+}
