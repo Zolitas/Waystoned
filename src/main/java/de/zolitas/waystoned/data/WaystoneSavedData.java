@@ -50,14 +50,16 @@ public class WaystoneSavedData extends SavedData {
   }
 
   @SubscribeEvent
-  private void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+  private static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
     if (!(event.getEntity() instanceof ServerPlayer player)) return;
+    if (player.getServer() == null) return;
 
     // rename waystones when the name changes
-    waystones
+    get(player.getServer())
+        .getWaystones()
         .stream()
         .filter(waystone -> waystone.getOwnerUUID().equals(player.getGameProfile().getId().toString()))
-        .filter(waystone -> !(waystone.getName().equals(player.getGameProfile().getName())))
-        .forEach(waystone -> waystone.setName(player.getGameProfile().getName()));
+        .filter(waystone -> !(waystone.getOwnerName().equals(player.getGameProfile().getName())))
+        .forEach(waystone -> waystone.setOwnerName(player.getGameProfile().getName()));
   }
 }

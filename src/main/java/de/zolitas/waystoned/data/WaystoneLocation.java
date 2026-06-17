@@ -18,7 +18,8 @@ public class WaystoneLocation {
   private final BlockPos pos;
   private final Float rot;
   private final ResourceLocation dimension;
-  private final String ownerName;
+  @Setter
+  private String ownerName;
   private final String ownerUUID;
 
   public static CompoundTag toCompoundTag(WaystoneLocation waystone) {

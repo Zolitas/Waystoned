@@ -43,7 +43,12 @@ public class WaystoneRenameScreen extends BaseOwoScreen<FlowLayout> {
     wrapper.child(textBox);
 
     ButtonComponent button = Components.button(Component.translatable("gui.done"), pressedButton -> {
-      PacketDistributor.sendToServer(new WaystoneRenameRequestPacket(textBox.getValue(), waystonePosition));
+      String value = textBox.getValue();
+
+      if (!value.isBlank()) {
+        PacketDistributor.sendToServer(new WaystoneRenameRequestPacket(value, waystonePosition));
+      }
+
       Minecraft.getInstance().setScreen(null);
     });
     button.horizontalSizing(Sizing.fill());
